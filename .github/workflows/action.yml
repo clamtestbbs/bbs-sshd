@@ -1,0 +1,27 @@
+name: Build bbs-sshd binary for Debian Bullseye(11)
+
+# Controls when the workflow will run
+on:
+  # Triggers the workflow on push or pull request events but only for the main branch
+  push:
+    branches: [ r2/withaction ]
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  container:
+    runs-on: ubuntu-latest
+    container: rust:latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+      - run: |
+          cargo build --release
+          mkdir -p upload/bullseye/
+          cp -v target/release/bbs-sshd upload/bullseye/bbs-sshd
+        name: Run in container
+      - name: Deploy
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.DEPLOY_TOKEN }}
+          publish_dir: ./upload
+          publish_branch: gh-pages  # deploying branch
