@@ -17,7 +17,8 @@ jobs:
       - run: |
           cargo build --release
           mkdir -p upload/bullseye/
-          cp -v target/release/bbs-sshd upload/bullseye/bbs-sshd
+          tar -zcvf bbs-sshd.tgz -C target/ release
+          cp -v bbs-sshd.tgz upload/bullseye/bbs-sshd.tgz
         name: Run in container
       - name: Deploy
         uses: peaceiris/actions-gh-pages@v3
